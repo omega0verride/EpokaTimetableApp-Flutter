@@ -31,7 +31,7 @@ class LoadingScreen extends StatelessWidget {
                   if (snapshot.hasData) {
                     Future.microtask(() => Navigator.pushNamed(context,
                         nextRoute)); // push after widget build !important
-                    return Text("");
+                    return const Text("");
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }

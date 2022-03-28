@@ -14,11 +14,10 @@ class TTSelection extends StatefulWidget {
   bool allowNav = false;
   Config config;
 
-  TTSelection(
-      {required this.timetableOptions,
+  TTSelection({Key? key, required this.timetableOptions,
       required this.dataSource,
-      required this.config,
-      Key? key}) {
+      required this.config})
+      : super(key: key) {
     firstTimeMode = config.firstTimeMode;
   }
 
@@ -78,7 +77,7 @@ class TTSelectionState extends State<TTSelection> {
                             ),
                           ],
                         )))); // push after widget build !important
-                  return Text("");
+                  return const Text("");
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
@@ -107,7 +106,7 @@ class TTSelectionState extends State<TTSelection> {
                   Future.microtask(() => setState(() => elements = [
                         optCards
                       ])); // push after widget build !important
-                  return Text("");
+                  return const Text("");
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
@@ -169,14 +168,14 @@ class TTSelectionState extends State<TTSelection> {
           drawer: widget.firstTimeMode == true ? null : const CustomDrawer(),
           key: _key,
           appBar: AppBar(
-              backgroundColor: Color.fromRGBO(21, 55, 99, 1),
-              title: Text("Timetable Selection")),
+              backgroundColor: const Color.fromRGBO(21, 55, 99, 1),
+              title: const Text("Timetable Selection")),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               _key.currentState!.openDrawer();
             },
             child: const Icon(Icons.menu_open_outlined),
-            backgroundColor: Color(0xff152238),
+            backgroundColor: const Color(0xff152238),
           ),
           body: Stack(children: elements),
         ));
@@ -203,7 +202,7 @@ class TTSelectionState extends State<TTSelection> {
       child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               flex: 1,
               child: GestureDetector(
@@ -217,7 +216,7 @@ class TTSelectionState extends State<TTSelection> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 16),
                             child: Text(
                               opt,
@@ -229,9 +228,9 @@ class TTSelectionState extends State<TTSelection> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 16),
-                          child: Icon(Icons.navigate_next),
+                          child: const Icon(Icons.navigate_next),
                         ),
                       ],
                     ),

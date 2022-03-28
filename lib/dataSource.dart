@@ -12,11 +12,6 @@ import 'auxiliaries/CustomTime.dart';
 class DataSource {
   late Map<String, String> _headers;
 
-  final startTimeH = 8;
-  final startTimeM = 45;
-  final intervalInMin = 45;
-  final breakInMin = 15;
-
   final url = "https://epoka.edu.al/timetable";
 
   final uas = [
