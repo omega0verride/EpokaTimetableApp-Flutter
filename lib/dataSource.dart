@@ -38,7 +38,7 @@ class DataSource {
     return post(Uri.parse(url), body: selection, headers: _headers)
         .then((Response response) {
       var _data = response.body;
-      dev.log(_data.toString());
+      // dev.log(_data.toString());
       var rawData = scrapeData(data: _data.toString());
       data['timetableOptions'] = rawData['timetableOptions'];
       data['weeks'] = [];
@@ -74,7 +74,7 @@ class DataSource {
               ],
               startTime: CustomTime.clone(time: currentTime),
               endTime: CustomTime.clone(time: currentTime).addMinutes(45));
-//          schedule.hours.add(schedule);
+          schedule.hours.add(schedule);
           currentTime.addMinutes(45 + 15);
         } else {
           var col = daySchedule[i]['color'];
@@ -114,8 +114,8 @@ class DataSource {
                       15 * (daySchedule[i]['nCnt'] - 1 as int)));
 
           for (int j = 0; j < daySchedule[i]['nCnt']; j++) {
-            schedule.hours.add(CourseSchedule(
-                nCnt: daySchedule[i]['nCnt'],
+            CourseSchedule tmp = CourseSchedule(
+                nCnt: 1,
                 type: 1,
                 lecturers: daySchedule[i]['lecturers'],
                 course: daySchedule[i]['course'],
@@ -123,7 +123,10 @@ class DataSource {
                 color: color,
                 bgColors: bgColors,
                 startTime: CustomTime.clone(time: currentTime),
-                endTime: CustomTime.clone(time: currentTime).addMinutes(45)));
+                endTime: CustomTime.clone(time: currentTime).addMinutes(45),
+                );
+            tmp.hours.add(tmp);
+            schedule.hours.add(tmp);
             currentTime.addMinutes(45 + 15);
           }
         }

@@ -41,7 +41,6 @@ class DayView extends StatefulWidget {
     } else {
       title = day;
     }
-    dev.log(index.toString());
   }
 
   @override
@@ -176,7 +175,9 @@ class DayViewState extends State<DayView> {
         bool showHeader = true;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
+            for (CourseSchedule s in h.hours)
+              buildItem(index, context, s)
 //            showHeader
 //                ? Container(
 //              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -188,16 +189,14 @@ class DayViewState extends State<DayView> {
 //                ),
 //              ),
 //            )
-//                : Offstage(),
-            buildItem(index, context, h.startTime, h.endTime, h),
+//                : Offstage(),,
           ],
         );
       },
     );
   }
 
-  Widget buildItem(int index, BuildContext context, CustomTime startTime,
-      CustomTime endTime, CourseSchedule h) {
+  Widget buildItem(int index, BuildContext context, CourseSchedule h) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -224,12 +223,15 @@ class DayViewState extends State<DayView> {
         child: Column(
           children: <Widget>[
             Container(
-              height: 40.0 * h.nCnt,
-              alignment: Alignment.center,
+              // this line is quite not readable but assured to work in any case unless the text overflows
+              // I may add more comments later
+              height: h.type==1?40.0 * h.nCnt+((h.nCnt-1)*20)+((h.nCnt-2)>0?(h.nCnt-2)*20:0):40,
+              // height: h.type==1?40:40,
+              alignment: Alignment.topCenter,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Text(
                 h.course,
-                textAlign: TextAlign.right,
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: h.color, fontWeight: FontWeight.bold, fontSize: 15),
               ),
