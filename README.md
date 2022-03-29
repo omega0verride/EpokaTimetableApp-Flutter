@@ -1,3 +1,3 @@
 # EpokaTimetableApp-Flutter
 
-![](/screenshots/0.jpg | width=100)
+<img src="/screenshots/0.jpg" width="100">
