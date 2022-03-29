@@ -1,5 +1,9 @@
 # EpokaTimetableApp-Flutter
+A simple app made in flutter to scrape the data from https://epoka.edu.al/timetable and show it in 2 modes, weekly and daily.
+Note that this was just to practice my skills and the code is not well documented/commented.
+The site does not have an API so the app may break someday if the html format changes and the scraping fails.
 
+The app saves the default timetable so you do not have to choose it everytime you open it.
 
 <p align="center">
 <img src="/screenshots/2.jpg" width="300">
