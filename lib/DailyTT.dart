@@ -1,18 +1,15 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'CustomDrawer.dart';
+import 'StartupConfig.dart';
 import 'auxiliaries/CourseSchedule.dart';
-import 'auxiliaries/CustomTime.dart';
-import 'auxiliaries/StartupConfig.dart';
 
 class DayView extends StatefulWidget {
   List weeks;
   int index;
   late String day;
-  var today = DateFormat('EEEE').format(DateTime.now());
+
   late String title;
   var hours = [];
   Config config;
@@ -34,6 +31,7 @@ class DayView extends StatefulWidget {
 
     day = week[index][0];
     hours = week[index][1];
+    var today = DateFormat('EEEE').format(DateTime.now());
     if (today == day) {
       title = day + " (Today)";
     } else if (today == "Sunday" && day == "Monday") {
@@ -147,7 +145,7 @@ class DayViewState extends State<DayView> {
             _key.currentState!.openDrawer();
           },
           child: const Icon(Icons.menu_open_outlined),
-          backgroundColor: Color(0xff152238),
+          backgroundColor: const Color(0xff152238),
         ),
         body: GestureDetector(
           // add swipe gestures to body
@@ -168,52 +166,49 @@ class DayViewState extends State<DayView> {
 
   ListView buildListView() {
     return ListView.builder(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
       itemCount: widget.hours.length,
       itemBuilder: (context, index) {
         CourseSchedule h = widget.hours[index];
-        bool showHeader = true;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (CourseSchedule s in h.hours)
-              buildItem(index, context, s)
-//            showHeader
-//                ? Container(
-//              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-//              child: Text(
-//                h.course,
-//                style: Theme.of(context).textTheme.subtitle2?.copyWith(
-//                  color: Theme.of(context).primaryColor,
-//                  fontWeight: FontWeight.bold,
-//                ),
-//              ),
-//            )
-//                : Offstage(),,
-          ],
+          children: buildHourCards(context, h),
         );
       },
     );
   }
 
-  Widget buildItem(int index, BuildContext context, CourseSchedule h) {
+  // ignore: curly_braces_in_flow_control_structures
+  List<Widget> buildHourCards(BuildContext context, h) {
+    List<Widget> items = [];
+    if (widget.config.dailyViewMode == 0) {
+      items.add(buildItem(context, h));
+    } else {
+      for (CourseSchedule s in h.hours) {
+        items.add(buildItem(context, s));
+      }
+    }
+    return items;
+  }
+
+  Widget buildItem(BuildContext context, CourseSchedule h) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          SizedBox(width: 10),
-          buildLine(index, context, h.nCnt),
-          buildTime(index, context, h),
+          const SizedBox(width: 10),
+          buildLine(context, h.nCnt),
+          buildTime(context, h),
           Expanded(
             flex: 1,
-            child: buildItemInfo(h, context),
+            child: buildItemInfo(context, h),
           ),
         ],
       ),
     );
   }
 
-  Card buildItemInfo(CourseSchedule h, BuildContext context) {
+  Card buildItemInfo(BuildContext context, CourseSchedule h) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
@@ -223,9 +218,13 @@ class DayViewState extends State<DayView> {
         child: Column(
           children: <Widget>[
             Container(
-              // this line is quite not readable but assured to work in any case unless the text overflows
-              // I may add more comments later
-              height: h.type==1?40.0 * h.nCnt+((h.nCnt-1)*20)+((h.nCnt-2)>0?(h.nCnt-2)*20:0):40,
+//               this line is quite not readable but assured to work in any case unless the text overflows
+//               I may try something later to make each hour have the same height
+              height: h.type == 1
+                  ? 40.0 * h.nCnt +
+                      ((h.nCnt - 1) * 20) +
+                      ((h.nCnt - 2) > 0 ? (h.nCnt - 2) * 20 : 0)
+                  : null,
               // height: h.type==1?40:40,
               alignment: Alignment.topCenter,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -274,7 +273,7 @@ class DayViewState extends State<DayView> {
     );
   }
 
-  Column buildLine(int index, BuildContext context, int cnt) {
+  Column buildLine(BuildContext context, int cnt) {
     List<Widget> list = <Widget>[];
     for (int i = 0; i < cnt; i++) {
       list.add(Container(
@@ -300,7 +299,7 @@ class DayViewState extends State<DayView> {
     return Column(mainAxisSize: MainAxisSize.max, children: list);
   }
 
-  Column buildTime(int index, BuildContext context, CourseSchedule h) {
+  Column buildTime(BuildContext context, CourseSchedule h) {
     List<Widget> list = <Widget>[];
     for (CourseSchedule s in h.hours) {
       list.add(Expanded(
@@ -367,7 +366,7 @@ class DayViewState extends State<DayView> {
                 },
               ),
             ),
-            contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 10),
           );
         });
   }
