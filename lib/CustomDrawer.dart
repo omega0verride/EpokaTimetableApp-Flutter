@@ -92,9 +92,7 @@ class CustomDrawer extends StatelessWidget {
             title: Text("Settings",
                 style:
                     GoogleFonts.josefinSans(color: Colors.white, fontSize: 15)),
-            onTap: () {
-              Navigator.pushNamed(context, '/settings');
-            },
+            onTap: () {},
           ),
           Expanded(
             flex: 1,
