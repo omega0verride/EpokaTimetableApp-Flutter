@@ -1,5 +1,6 @@
 # EpokaTimetableApp-Flutter
 
+<div style="margin: auto;  width: 50%;  padding: 10px;">
 <p float="left">
 <img src="/screenshots/2.jpg" width="300">
 <img src="/screenshots/7.jpg" width="300">
@@ -22,3 +23,4 @@
 <img src="/screenshots/12.jpg" width="200">
 <img src="/screenshots/7.jpg" width="200">
 </p>
+</div>
