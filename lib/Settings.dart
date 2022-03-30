@@ -8,11 +8,7 @@ import 'StartupConfig.dart';
 class Settings extends StatefulWidget {
   Config config;
 
-  late int dailyViewModeChoice;
-
-  Settings({Key? key, required this.config}) : super(key: key) {
-    dailyViewModeChoice = config.dailyViewMode;
-  }
+  Settings({Key? key, required this.config}) : super(key: key);
 
   @override
   SettingsState createState() => SettingsState();
