@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'DailyTT.dart';
 import 'Loading.dart';
+import 'Settings.dart';
+import 'StartupConfig.dart';
 import 'WeeklyTT.dart';
 import 'auxiliaries/CustomHttpOverrides.dart';
-import 'auxiliaries/StartupConfig.dart';
 import 'dataSource.dart';
 
 void main() {
@@ -33,19 +34,8 @@ void main() {
             timetableOptions: _dataSource.data['timetableOptions'],
             dataSource: _dataSource,
             config: config),
+        '/settings': (context) => Settings(config: config),
         '/weekly': (context) => WeekView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/0': (context) => DayView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/1': (context) => DayView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/2': (context) => DayView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/3': (context) => DayView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/4': (context) => DayView(
-            config: config, weeks: _dataSource.data['weeks'], index: index),
-        '/5': (context) => DayView(
             config: config, weeks: _dataSource.data['weeks'], index: index),
       },
     ),

@@ -3,8 +3,8 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 
 import 'CustomDrawer.dart';
+import 'StartupConfig.dart';
 import 'auxiliaries/FileHandling.dart';
-import 'auxiliaries/StartupConfig.dart';
 import 'dataSource.dart';
 
 class TTSelection extends StatefulWidget {
@@ -139,7 +139,7 @@ class TTSelectionState extends State<TTSelection> {
           'This is your first time config. Please choose your default Timetable.';
     } else {
       msg =
-          "You can navigate through the menu. Turning back after is not implemented yet.";
+          "You can navigate through the menu. Turning back is not implemented yet.";
     }
     var snackBar = SnackBar(
       content: Text(msg),

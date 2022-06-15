@@ -1,12 +1,11 @@
-import 'dart:developer' as dev;
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:zoom_widget/zoom_widget.dart';
 
 import 'CustomDrawer.dart';
+import 'StartupConfig.dart';
 import 'auxiliaries/CourseSchedule.dart';
 import 'auxiliaries/CustomTime.dart';
-import 'auxiliaries/StartupConfig.dart';
 
 class WeekView extends StatefulWidget {
   List weeks;
@@ -48,10 +47,11 @@ class WeekViewState extends State<WeekView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WeekView(
-            config: widget.config,
-            weeks: widget.weeks,
-            index: widget.index - 1),
+        builder: (context) =>
+            WeekView(
+                config: widget.config,
+                weeks: widget.weeks,
+                index: widget.index - 1),
       ),
     );
   }
@@ -60,10 +60,11 @@ class WeekViewState extends State<WeekView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WeekView(
-            config: widget.config,
-            weeks: widget.weeks,
-            index: widget.index + 1),
+        builder: (context) =>
+            WeekView(
+                config: widget.config,
+                weeks: widget.weeks,
+                index: widget.index + 1),
       ),
     );
   }
@@ -76,7 +77,7 @@ class WeekViewState extends State<WeekView> {
       widget.hours = day[1];
       break;
     }
-    dev.log(widget.week.toString());
+//    dev.log(widget.week.toString());
   }
 
   @override
@@ -89,7 +90,9 @@ class WeekViewState extends State<WeekView> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: const Color(0xff152238),
-            iconTheme: Theme.of(context).iconTheme,
+            iconTheme: Theme
+                .of(context)
+                .iconTheme,
             flexibleSpace: GestureDetector(onPanUpdate: (details) {
               if (details.delta.dx > 0) {
                 prevWeek();
@@ -166,107 +169,67 @@ class WeekViewState extends State<WeekView> {
     );
   }
 
-  Container buildListView() {
-    return Container(
+  Row buildTimeHeader(BuildContext context) {
+    List<Widget> timeLabels = [];
+    timeLabels.add(Container(
+        alignment: Alignment.center,
+        width: 100,
+        height: 60,
+        child: Text("Time",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))));
+    CustomTime currentTime = CustomTime(h: 8, m: 45);
+    for (int i = 0; i < 12; i++) {
+      timeLabels.add(Container(
+          alignment: Alignment.center,
+          width: 148,
+          child: Text(
+              currentTime.toString() +
+                  "-" +
+                  currentTime.addMinutes(45).toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))));
+      currentTime.addMinutes(15);
+    }
+    return Row(
+      children: timeLabels,
+    );
+  }
+
+  Zoom buildListView() {
+    var v = Container(
       child: Column(children: [
+        buildTimeHeader(context),
         for (int i = 0; i < widget.week.length; i++)
-          Row(
-            children: [
-              for (int j = 0; j < widget.week[i][1].length; j++)
-                buildItemInfo(widget.week[i][1][j], context),
-            ],
-          )
+          IntrinsicHeight(
+              child: Row(
+//                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                      width: 100,
+                      child: Text(widget.week[i][0],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold))),
+                  for (int j = 0; j < widget.week[i][1].length; j++)
+                    buildItemInfo(widget.week[i][1][j], context),
+                ],
+              ))
       ]),
     );
-  }
-
-  InteractiveViewer buildListView1() {
-    return InteractiveViewer(
-      constrained: false,
-      panEnabled: false,
-      // Set it to false to prevent panning.
-      boundaryMargin: EdgeInsets.only(top: 0, bottom: 1200, right: 1200),
-      minScale: 0.01,
-      maxScale: 1,
-      child: Column(children: [
-        for (int i = 0; i < widget.week.length; i++)
-          Row(
-            children: [
-              for (int j = 0; j < widget.week[i][1].length; j++)
-                buildItemInfo(widget.week[i][1][j], context),
-            ],
-          )
-      ]),
-    );
-  }
-
-  Widget buildDayNames(BuildContext context) {
-    return Container();
-  }
-
-  Widget buildItem(int index, BuildContext context, CustomTime startTime,
-      CustomTime endTime, CourseSchedule h) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(width: 10),
-          buildLine(index, context),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-              Container(
-                alignment: Alignment.topCenter,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                child: Text(
-                  startTime.toString(),
-                  style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-              // space between times
-              const SizedBox(
-                height: 5,
-              ),
-              Container(
-                alignment: Alignment.topCenter,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                child: Text(
-                  endTime.toString(),
-                  style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                        // color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-            ],
-          ),
-          Expanded(
-            flex: 1,
-            child: buildItemInfo(h, context),
-          ),
-        ],
-      ),
-    );
+    return Zoom(
+        maxZoomWidth: 2000,
+        maxZoomHeight: 1100,
+        backgroundColor: Colors.black,
+        child: v);
   }
 
   Card buildItemInfo(CourseSchedule h, BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
-        width: 100.0 * h.nCnt + 10 * (h.nCnt - 1),
-        height: 150,
+        width: 140.0 * h.nCnt + 8 * (h.nCnt - 1),
+//        height: 150,
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: h.bgColors),
         ),
@@ -277,40 +240,50 @@ class WeekViewState extends State<WeekView> {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Text(
                 h.course,
-                textAlign: TextAlign.right,
-                style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                textAlign: TextAlign.center,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .subtitle2
+                    ?.copyWith(
                     color: h.color, fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ),
+            Expanded(flex: 1, child: Container()),
             Row(children: [
-              Container(
-                alignment: Alignment.bottomLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                child: Text(
-                  h.classCode,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      ?.copyWith(color: h.color, fontSize: 13),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.bottomLeft,
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  child: Text(
+                    h.classCode,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(color: h.color, fontSize: 13),
+                  ),
                 ),
               ),
               Container(
                   alignment: Alignment.bottomLeft,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                   child: h.lecturers.isNotEmpty
                       ? (h.lecturers.length == 1
-                          ? Text(h.lecturers[0],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2
-                                  ?.copyWith(color: h.color, fontSize: 13))
-                          : IconButton(
-                              onPressed: () =>
-                                  {buildLecturersCard(h.lecturers)},
-                              icon: const Icon(Icons.person,
-                                  color: Colors.black38)))
+                      ? Text(h.lecturers[0],
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: h.color, fontSize: 13))
+                      : IconButton(
+                      onPressed: () =>
+                      {buildLecturersCard(h.lecturers)},
+                      icon: const Icon(Icons.person,
+                          color: Colors.black38)))
                       : Container()),
             ])
           ],
@@ -347,36 +320,5 @@ class WeekViewState extends State<WeekView> {
             contentPadding: EdgeInsets.only(top: 10, bottom: 10),
           );
         });
-  }
-
-  Column buildLine(int index, BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-//          Expanded(
-//            flex: 1,
-//            child: Container(
-//              width: 2,
-//              color: Theme.of(context).accentColor,
-//            ),
-//          ),
-      Container(
-        width: 6,
-        height: 10,
-        child: Column(
-          children: [
-            DecoratedBox(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    shape: BoxShape.circle)),
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 1,
-        child: Container(
-          width: 2,
-          color: Theme.of(context).accentColor,
-        ),
-      ),
-    ]);
   }
 }

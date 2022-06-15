@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 
-import 'package:epokaTimetable/auxiliaries/StartupConfig.dart';
 import 'package:epokaTimetable/dataSource.dart';
 import 'package:flutter/material.dart';
+
+import 'StartupConfig.dart';
 
 class LoadingScreen extends StatelessWidget {
   Config config;
@@ -18,8 +18,6 @@ class LoadingScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String nextRoute = config.nextRoute;
-          dev.log("----------->" + nextRoute);
-          dev.log("----------->" + config.url);
           return Scaffold(
               appBar: AppBar(
                 title: const Text("Fetching Data"),
