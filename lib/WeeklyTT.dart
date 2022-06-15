@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zoom_widget/zoom_widget.dart';
+import 'dart:developer' as dev;
 
 import 'CustomDrawer.dart';
 import 'StartupConfig.dart';
 import 'auxiliaries/CourseSchedule.dart';
 import 'auxiliaries/CustomTime.dart';
+
 
 class WeekView extends StatefulWidget {
   List weeks;
@@ -33,6 +35,8 @@ class WeekView extends StatefulWidget {
     }
     title = "Week " + (index + 1).toString();
     week = weeks[index];
+    dev.log(index.toString());
+    dev.log(weeks.toString());
   }
 
   @override

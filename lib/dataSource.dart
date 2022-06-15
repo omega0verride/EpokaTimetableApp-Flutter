@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:ui';
@@ -41,10 +42,10 @@ class DataSource {
       var rawData = scrapeData(data: _data.toString());
       data['timetableOptions'] = rawData['timetableOptions'];
       data['weeks'] = [];
-      dev.log("test");
-      dev.log(rawData["timetableOptions"]);
+
+      dev.log(rawData["timetableOptions"].toString());
       for (int i = 0; i < rawData['weeks'].length; i++) {
-        data['weeks'].add(createWeeklyOrganizedData(week: rawData['weeks'][0]));
+        data['weeks'].add(createWeeklyOrganizedData(week: rawData['weeks'][i]));
       }
       return data;
     });
@@ -154,92 +155,125 @@ class DataSource {
     }
 
     //get table and scrape the lectures from it
-    var table = soup.find('table');
-    var days_ = table!.findAll('tr');
-    days_.removeAt(0); // first row is time intervals
-    Map week_1 = {}; // I am not sure if during exams (when 2 weeks are showed)
-    dev.log(table.toString());
-    // they are showed as 2 tables or more rows are added to the table
-    var days = [];
-    dev.log(days.toString());
-    for (Bs4Element day in days_) {
-      var hours_ = day.findAll('td');
-//       dev.log("hours: "+hours_.toString().replaceAll("\n", "").replaceAll(" ", ""));
-      var hours = [];
-      for (var h in hours_) {
-        Map hourData;
-        if (h['style'] == '') {
-          // empty hours have no style
-          hourData = {
-            'nCnt': 1,
-            'type': 0,
-            'lecturers': [],
-            'course': null,
-            'classCode': null,
-            'color': null
-          };
-        } else {
-          // dev.log(h.toString());
-          var lecturersDivs = h.findAll('div', class_: "lect-card");
-          var lecturers_ = [];
-          for (var lct in lecturersDivs) {
-            // some courses have 2 lecturers split by a
-            lecturers_.addAll(lct.findAll(
-                'li')); // if there are more than 1 they are added as <li>
-            if (lecturers_.isEmpty) {
-              lecturers_.add(lct);
-            } // otherwise it is a simple div
-          }
-          List<String> lecturers = [];
-          for (var l in lecturers_) {
-            // get text from those tags and trim it
-            lecturers.add(l.getText().trimRight().trimLeft());
-          }
+    // var table = soup.find('table');
+    // var tHead_ = table!.find('thead');
+    // var tBody_ = table.find('tbody');
 
-          var elements = h.findAll('div');
-          var color = [];
-          try {
-            var color_ = h['style']
-                .toString()
-                .split(");")[0]
-                .split(" rgba(")[1]
-                .split(
-                    ","); // supposing the site is using the same format and all colors are rgba
-            for (int i = 0; i < 3; i++) {
-              color.add(int.parse(color_[i]));
-            }
-            color.add(double.parse(color_[3].toString()).toDouble());
-          } catch (e) {
-            dev.log(e.toString());
-            color = [];
-          }
+    var tHead_ = soup.find('thead');
+    var tBody_ = soup.find('tbody');
 
-          var cnt = 1;
-          try {
-            cnt = int.parse(h['colspan'].toString());
-          } catch (e) {
-            dev.log(h.toString());
-            dev.log(e.toString());
-          }
-          hourData = {
-            'nCnt': cnt,
-            'type': 1,
-            'lecturers': lecturers,
-            'course': elements[0].getText().trimLeft().trimRight(),
-            'classCode': elements[2].getText().trimLeft().trimRight(),
-            'color': color
-          };
-        }
-        // dev.log(hourData.toString());
-        hours.add(hourData);
-      }
-      days.add([day.find('th')?.getText().trimRight().trimLeft(), hours]);
-//      dev.log(days[days.length-1].toString());
+    var intervals_ = tHead_!.find('tr');
+
+    var days_ = tBody_!.findAll('tr');
+
+
+    var weeks_ = []; // I am not sure if during exams (when 2 weeks are showed)
+
+    dev.log("----->size: ");
+    dev.log(days_.length.toString());
+    if (days_.length>6){
+      days_.removeAt(0); // first row is week name
+      days_.removeAt(6); // first row is week name
+      weeks_.add(days_.sublist(0, 6));
+      weeks_.add(days_.sublist(6, 12));
     }
-//    dev.log(jsonEncode({'timetableOptions': timetableOptions, 'tt':days}));
+    else{
+      weeks_.add(days_.sublist(0, 6));
+    }
+
+
+    dev.log("<start>");
+    dev.log(weeks_[0].toString());
+    dev.log("<end>");
+
+    days_=weeks_[0];
+    // they are showed as 2 tables or more rows are added to the table
+
+    var weeks=[];
+    for (var week in weeks_){
+      var days = [];
+      // dev.log(week.toString());
+      for (Bs4Element day in week) {
+        var hours_ = day.findAll('td');
+//       dev.log("hours: "+hours_.toString().replaceAll("\n", "").replaceAll(" ", ""));
+        var hours = [];
+        for (var h in hours_) {
+          Map hourData;
+          if (h['style'] == '') {
+            // empty hours have no style
+            hourData = {
+              'nCnt': 1,
+              'type': 0,
+              'lecturers': [],
+              'course': null,
+              'classCode': null,
+              'color': null
+            };
+          } else {
+            // dev.log(h.toString());
+            var lecturersDivs = h.findAll('div', class_: "lect-card");
+            var lecturers_ = [];
+            for (var lct in lecturersDivs) {
+              // some courses have 2 lecturers split by a
+              lecturers_.addAll(lct.findAll(
+                  'li')); // if there are more than 1 they are added as <li>
+              if (lecturers_.isEmpty) {
+                lecturers_.add(lct);
+              } // otherwise it is a simple div
+            }
+            List<String> lecturers = [];
+            for (var l in lecturers_) {
+              // get text from those tags and trim it
+              lecturers.add(l.getText().trimRight().trimLeft());
+            }
+
+            var elements = h.findAll('div');
+            var color = [];
+            try {
+              var color_ = h['style']
+                  .toString()
+                  .split(");")[0]
+                  .split(" rgba(")[1]
+                  .split(
+                  ","); // supposing the site is using the same format and all colors are rgba
+              for (int i = 0; i < 3; i++) {
+                color.add(int.parse(color_[i]));
+              }
+              color.add(double.parse(color_[3].toString()).toDouble());
+            } catch (e) {
+              dev.log(e.toString());
+              color = [];
+            }
+
+            var cnt = 1;
+            try {
+              cnt = int.parse(h['colspan'].toString());
+            } catch (e) {
+              dev.log(h.toString());
+              dev.log(e.toString());
+            }
+            hourData = {
+              'nCnt': cnt,
+              'type': 1,
+              'lecturers': lecturers,
+              'course': elements[0].getText().trimLeft().trimRight(),
+              'classCode': elements[2].getText().trimLeft().trimRight(),
+              'color': color
+            };
+          }
+          // dev.log(hourData.toString());
+          hours.add(hourData);
+        }
+        days.add([day.find('th')?.getText().trimRight().trimLeft(), hours]);
+        // dev.log(days[days.length-1].toString());
+      }
+      weeks.add(days);
+    }
+
+   dev.log(jsonEncode({'timetableOptions': timetableOptions, 'tt':weeks}));
     return {
       'timetableOptions': timetableOptions,
-      'weeks': [days]
+      'weeks': weeks
     };
   }
 
