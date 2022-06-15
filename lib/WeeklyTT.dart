@@ -35,8 +35,6 @@ class WeekView extends StatefulWidget {
     }
     title = "Week " + (index + 1).toString();
     week = weeks[index];
-    dev.log(index.toString());
-    dev.log(weeks.toString());
   }
 
   @override

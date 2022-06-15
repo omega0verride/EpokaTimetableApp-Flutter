@@ -43,7 +43,7 @@ class DataSource {
       data['timetableOptions'] = rawData['timetableOptions'];
       data['weeks'] = [];
 
-      dev.log(rawData["timetableOptions"].toString());
+      // dev.log(rawData["timetableOptions"].toString());
       for (int i = 0; i < rawData['weeks'].length; i++) {
         data['weeks'].add(createWeeklyOrganizedData(week: rawData['weeks'][i]));
       }
@@ -169,8 +169,6 @@ class DataSource {
 
     var weeks_ = []; // I am not sure if during exams (when 2 weeks are showed)
 
-    dev.log("----->size: ");
-    dev.log(days_.length.toString());
     if (days_.length>6){
       days_.removeAt(0); // first row is week name
       days_.removeAt(6); // first row is week name
@@ -182,9 +180,9 @@ class DataSource {
     }
 
 
-    dev.log("<start>");
-    dev.log(weeks_[0].toString());
-    dev.log("<end>");
+    // dev.log("<start>");
+    // dev.log(weeks_[0].toString());
+    // dev.log("<end>");
 
     days_=weeks_[0];
     // they are showed as 2 tables or more rows are added to the table
@@ -270,7 +268,7 @@ class DataSource {
       weeks.add(days);
     }
 
-   dev.log(jsonEncode({'timetableOptions': timetableOptions, 'tt':weeks}));
+   // dev.log(jsonEncode({'timetableOptions': timetableOptions, 'tt':weeks}));
     return {
       'timetableOptions': timetableOptions,
       'weeks': weeks
@@ -293,8 +291,8 @@ class DataSource {
         String val = option['value'].toString();
         if ("" != val) classOptions.add(val);
       }
-      dev.log(classOptions_.toString());
-      dev.log(classOptions.toString());
+      // dev.log(classOptions_.toString());
+      // dev.log(classOptions.toString());
       return classOptions;
     });
   }
