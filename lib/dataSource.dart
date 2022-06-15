@@ -38,10 +38,11 @@ class DataSource {
     return post(Uri.parse(url), body: selection, headers: _headers)
         .then((Response response) {
       var _data = response.body;
-      // dev.log(_data.toString());
       var rawData = scrapeData(data: _data.toString());
       data['timetableOptions'] = rawData['timetableOptions'];
       data['weeks'] = [];
+      dev.log("test");
+      dev.log(rawData["timetableOptions"]);
       for (int i = 0; i < rawData['weeks'].length; i++) {
         data['weeks'].add(createWeeklyOrganizedData(week: rawData['weeks'][0]));
       }
@@ -157,9 +158,10 @@ class DataSource {
     var days_ = table!.findAll('tr');
     days_.removeAt(0); // first row is time intervals
     Map week_1 = {}; // I am not sure if during exams (when 2 weeks are showed)
+    dev.log(table.toString());
     // they are showed as 2 tables or more rows are added to the table
     var days = [];
-
+    dev.log(days.toString());
     for (Bs4Element day in days_) {
       var hours_ = day.findAll('td');
 //       dev.log("hours: "+hours_.toString().replaceAll("\n", "").replaceAll(" ", ""));
